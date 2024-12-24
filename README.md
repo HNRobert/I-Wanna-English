@@ -18,7 +18,7 @@ To get started, you need to install [im-select](https://github.com/daipeihust/im
 
 After installing it, put the path of the executable in the settings as the following format:
 
-<!-- TODO -->
+![Settings Demo](https://github.com/user-attachments/assets/d0ab8998-899c-45fc-9b9a-0c4e8c5be698)
 
 Then click the Enable option, and have fun coding!
 
@@ -30,4 +30,7 @@ Meanwhile, if you want to disable this function for a while, just a click at the
 
 ## Demo
 
-<!-- TODO -->
+https://github.com/user-attachments/assets/ada3be24-6382-4102-ac63-f8a09380e258
+
+
+
