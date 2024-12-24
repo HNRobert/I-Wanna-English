@@ -1,0 +1,66 @@
+{
+  "name": "i-wanna-english",
+  "displayName": "I Wanna English",
+  "description": "Auto switch input method in VSCode",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "icon": "images/logo.png",
+  "contributes": {
+    "configuration": {
+      "title": "I Wanna English",
+      "properties": {
+        "i-wanna-english.autoSwitchInputMethod.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable auto switch input method"
+        },
+        "i-wanna-english.autoSwitchInputMethod.defaultIM": {
+          "type": "string",
+          "default": "com.apple.keylayout.ABC",
+          "description": "Default input method to switch to"
+        },
+        "i-wanna-english.autoSwitchInputMethod.obtainIMCmd": {
+          "type": "string",
+          "default": "/opt/homebrew/bin/im-select",
+          "description": "Command to get current input method"
+        },
+        "i-wanna-english.autoSwitchInputMethod.switchIMCmd": {
+          "type": "string",
+          "default": "/opt/homebrew/bin/im-select {im}",
+          "description": "Command to switch input method. Use {im} as placeholder for input method"
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "i-wanna-english.testImSelect",
+        "title": "Test im-select Configuration",
+        "category": "I Wanna English"
+      },
+      {
+        "command": "i-wanna-english.toggle",
+        "title": "Toggle I Wanna English",
+        "category": "I Wanna English"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^14.x.x",
+    "@types/vscode": "^1.60.0",
+    "typescript": "^4.x.x"
+  }
+}
