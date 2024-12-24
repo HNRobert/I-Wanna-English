@@ -4,3 +4,4 @@ tests
 .vscode
 .git
 *.vsix
+.DS_Store
