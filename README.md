@@ -30,7 +30,4 @@ Meanwhile, if you want to disable this function for a while, just a click at the
 
 ## Demo
 
-https://github.com/user-attachments/assets/ada3be24-6382-4102-ac63-f8a09380e258
-
-
-
+<https://github.com/user-attachments/assets/ada3be24-6382-4102-ac63-f8a09380e258>
