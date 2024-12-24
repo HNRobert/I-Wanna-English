@@ -2,7 +2,8 @@
   "name": "i-wanna-english",
   "displayName": "I Wanna English",
   "description": "Auto switch input method in VSCode",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "publisher": "HNRobert",
   "engines": {
     "vscode": "^1.60.0"
   },
@@ -14,6 +15,10 @@
   ],
   "main": "./out/extension.js",
   "icon": "images/logo.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HNRobert/I-Wanna-English.git"
+  },
   "contributes": {
     "configuration": {
       "title": "I Wanna English",
