@@ -56,6 +56,14 @@
         "title": "Toggle I Wanna English",
         "category": "I Wanna English"
       }
+    ],
+    "keybindings": [
+      {
+        "command": "i-wanna-english.toggle",
+        "key": "ctrl+alt+e",
+        "mac": "cmd+alt+e",
+        "when": "editorTextFocus"
+      }
     ]
   },
   "scripts": {

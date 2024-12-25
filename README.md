@@ -26,7 +26,12 @@ Then click the Enable option, and have fun coding!
 
 PS. You can also replace English with any other language, as long as you like.
 
-Meanwhile, if you want to disable this function for a while, just a click at the status bar, anytime.
+Meanwhile, if you want to disable this function for a while, you just need to:
+
+- Click the status bar icon
+- Use keyboard shortcut:
+  - Windows/Linux: `Ctrl+Alt+E`
+  - macOS: `Cmd+Option+E`
 
 ## Demo
 
