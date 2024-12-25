@@ -4,7 +4,7 @@
 
 ## Demo
 
-<!-- TODO -->
+![IWE-Demo](https://github.com/user-attachments/assets/d30bff5d-755e-4344-a6b6-c1f4e7cc4a8d)
 
 ## Why?
 
