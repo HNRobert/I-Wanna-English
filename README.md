@@ -2,37 +2,37 @@
 
   A VSCode Extension that enforces the use of English in the Editing view
 
+## Demo
+
+<!-- TODO -->
+
 ## Why?
 
-It's really annoying when you wanna start coding happily, but the Input method suddenly bump out and scare you.
+It's really annoying when you wanna start coding happily, but the Input method suddenly bumps out and say hello to you.
 
-This Plugin would more or less solve the problem: You would switch to English automatically the moment you get into the editing view, isn't it great?
+This plugin would more or less solve the problem: You would switch to English automatically the moment you get into the editing view, isn't it great?
 
 ## How to use?
 
-On Installing the Extension, you may go to the settings and find the following settings:
+On Installing the Extension, you may go to the settings and find the following items:
 
-They are similar to these in the Vim Extension -- Yeah, literally the Same...
+To get started, you need to install [im-select](https://github.com/daipeihust/im-select) to help the extension switch the your input method before hitting the keyboard.
 
-To get started, you need to install [im-select](https://github.com/daipeihust/im-select) to help the extension switch the language of your system.
+They are similar to those in the Vim Extension -- Yeah, literally the same...
 
-After installing it, put the path of the executable in the settings as the following format:
+After installing it, put the path of the executable in the settings using the following format:
 
 ![Settings Demo](https://github.com/user-attachments/assets/d0ab8998-899c-45fc-9b9a-0c4e8c5be698)
 
-Then click the Enable option, and have fun coding!
+Then click the **Enable** option, and have fun coding!
 
-(There is a testing function, type ```>I Wanna English: Test``` on the searching column above, and you will see the test function)
+(There is a testing function, type `>I Wanna English: Test` on the searching column above, and you will see the button)
 
-PS. You can also replace English with any other language, as long as you like.
+PS: You can also replace English with any other language, as long as you like (易语言: ? (bushi)).
 
-Meanwhile, if you want to disable this function for a while, you just need to:
+Meanwhile, if you want to disable this function for a while, you only need to:
 
 - Click the status bar icon
 - Use keyboard shortcut:
   - Windows/Linux: `Ctrl+Alt+E`
   - macOS: `Cmd+Option+E`
-
-## Demo
-
-<https://github.com/user-attachments/assets/ada3be24-6382-4102-ac63-f8a09380e258>
