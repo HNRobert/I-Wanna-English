@@ -34,9 +34,9 @@ jobs:
       - name: Package the extension
         run: |
           if [[ ${{ steps.prerelease.outputs.prerelease }} == 'true' ]]; then
-            vsce package --pre-release
+            vsce package --pre-release -o i-wanna-english.vsix
           else
-            vsce package
+            vsce package -o i-wanna-english.vsix
           fi
 
       - name: Get previous tag
