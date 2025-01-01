@@ -57,9 +57,39 @@ export async function activate(context: vscode.ExtensionContext) {
     if (!defaultIM) {
         const platform = process.platform;
         if (platform === 'win32') {
-            await config.update('defaultIM', '1033', vscode.ConfigurationTarget.Global);
+            const possibleIMs = ['1033', '2057', '4105', '3081'];
+            for (const im of possibleIMs) {
+                try {
+                    await execCommand(`im-select ${im}`);
+                    await config.update('defaultIM', im, vscode.ConfigurationTarget.Global);
+                    break;
+                } catch (error) {
+                    // Continue to the next possible input method
+                }
+            }
+            
         } else if (platform === 'darwin') {
-            await config.update('defaultIM', 'com.apple.keylayout.ABC', vscode.ConfigurationTarget.Global);
+            const possibleIMs = [
+                'com.apple.keylayout.ABC',
+                'com.apple.keylayout.British',
+                'com.apple.keylayout.US',
+                'com.apple.keylayout.Canadian',
+                'com.apple.keylayout.Australian',
+                'com.apple.keylayout.Dvorak',
+                'com.apple.keylayout.Colemak',
+                'com.apple.keylayout.Irish',
+                'com.apple.keylayout.USInternational-PC',
+                'com.apple.keylayout.British-PC'
+            ];
+            for (const im of possibleIMs) {
+                try {
+                    await execCommand(`im-select ${im}`);
+                    await config.update('defaultIM', im, vscode.ConfigurationTarget.Global);
+                    break;
+                } catch (error) {
+                    // Continue to the next possible input method
+                }
+            }
         }
     }
 
