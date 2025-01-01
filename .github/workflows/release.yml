@@ -30,12 +30,6 @@ jobs:
           version=$(echo $tag | sed -E 's/^([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
           echo "::set-output name=version::$version"
 
-      - name: Get current branch
-        id: get_branch
-        run: |
-          branch=$(echo ${GITHUB_REF#refs/heads/} | sed 's/refs\/heads\///')
-          echo "::set-output name=branch::$branch"
-
       - name: Configure Git credentials
         run: |
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
@@ -53,23 +47,18 @@ jobs:
             git config --global user.email "github-actions[bot]@users.noreply.github.com"
             git add package.json package-lock.json
             git commit -m "chore: update version to $version"
-            git push origin HEAD:${{ steps.get_branch.outputs.branch }}
+            git push origin HEAD:main
             echo "::set-output name=tag_updated::true"
           else
             echo "::set-output name=tag_updated::false"
           fi
-
-      - name: Delete remote tag
-        if: steps.update_version.outputs.tag_updated == 'true'
-        run: |
-          git push --delete origin ${{ github.ref_name }}
 
       - name: Move tag to new commit
         if: steps.update_version.outputs.tag_updated == 'true'
         run: |
           git tag -d ${{ github.ref_name }}
           git tag ${{ github.ref_name }}
-          git push origin ${{ github.ref_name }}
+          git push --force origin ${{ github.ref_name }}
 
       - name: End workflow if tag updated
         if: steps.update_version.outputs.tag_updated == 'true'
