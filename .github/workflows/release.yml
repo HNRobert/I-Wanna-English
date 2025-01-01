@@ -16,7 +16,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '18'
 
       - name: Install dependencies
         run: npm install
@@ -27,12 +27,17 @@ jobs:
       - name: Build the extension
         run: npm run compile
 
-      - name: Package the extension
-        run: vsce package
-
       - name: Determine if prerelease
         id: prerelease
         run: echo "::set-output name=prerelease::$(if [[ ${{ github.ref }} == *beta* ]]; then echo true; else echo false; fi)"
+
+      - name: Package the extension
+        run: |
+          if [[ ${{ steps.prerelease.outputs.prerelease }} == 'true' ]]; then
+            vsce package --pre-release
+          else
+            vsce package
+          fi
 
       - name: Get previous tag
         id: prev_tag
@@ -69,5 +74,15 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./i-wanna-english.vsix
-          asset_name: i-wanna-english-v${{ github.ref }}.vsix
+          asset_name: i-wanna-english-${{ github.ref }}.vsix
           asset_content_type: application/octet-stream
+
+      - name: Publish to VSCode Marketplace
+        run: |
+          if [[ ${{ steps.prerelease.outputs.prerelease }} == 'true' ]]; then
+            vsce publish --pre-release -p ${{ secrets.VSCE_PAT }}
+          else
+            vsce publish -p ${{ secrets.VSCE_PAT }}
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.VSCE_PAT }}
