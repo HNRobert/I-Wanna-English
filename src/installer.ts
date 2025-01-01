@@ -4,8 +4,8 @@ import * as path from 'path';
 import * as https from 'https';
 import { execCommand } from './utils';
 
-const WIN_X64_URL = 'https://github.com/daipeihust/im-select/raw/master/im-select-win/out/x64/im-select.exe';
-const WIN_X86_URL = 'https://github.com/daipeihust/im-select/raw/master/win/out/x86/im-select.exe';
+const WIN_X64_URL = 'https://github.com/daipeihust/im-select/blob/master/win/out/x64/im-select.exe?raw=true';
+const WIN_X86_URL = 'https://github.com/daipeihust/im-select/blob/master/win/out/x86/im-select.exe?raw=true';
 
 export async function checkAndInstallImSelect(): Promise<boolean> {
     const platform = process.platform;
