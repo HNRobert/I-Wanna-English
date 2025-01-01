@@ -45,7 +45,10 @@ async function handleMacInstallation(config: vscode.WorkspaceConfiguration): Pro
                     progress.report({ increment: 100, message: "Homebrew installation complete." });
                     return true;
                 } catch (error) {
-                    vscode.window.showErrorMessage('Failed to install Homebrew: ' + error + '. You may retry or install Homebrew manually.');
+                    const retry = await vscode.window.showErrorMessage('Failed to install Homebrew: ' + error + '. You may retry or install Homebrew manually.', 'Retry');
+                    if (retry === 'Retry') {
+                        return await handleMacInstallation(config);
+                    }
                     return false;
                 }
             });
@@ -80,7 +83,10 @@ async function handleMacInstallation(config: vscode.WorkspaceConfiguration): Pro
                     progress.report({ increment: 100, message: "Installation complete." });
                     return true;
                 } catch (error) {
-                    vscode.window.showErrorMessage('Failed to install im-select: ' + error);
+                    const retry = await vscode.window.showErrorMessage('Failed to install im-select: ' + error, 'Retry');
+                    if (retry === 'Retry') {
+                        return await handleMacInstallation(config);
+                    }
                     return false;
                 }
             });
@@ -131,7 +137,10 @@ async function handleWindowsInstallation(config: vscode.WorkspaceConfiguration):
 
                 return true;
             } catch (error) {
-                vscode.window.showErrorMessage('Failed to install im-select: ' + error);
+                const retry = await vscode.window.showErrorMessage('Failed to install im-select: ' + error, 'Retry');
+                if (retry === 'Retry') {
+                    return await handleWindowsInstallation(config);
+                }
                 return false;
             }
         });
