@@ -30,6 +30,10 @@ jobs:
           version=$(echo $tag | sed -E 's/^([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
           echo "::set-output name=version::$version"
 
+      - name: Get current branch
+        id: get_branch
+        run: echo "::set-output name=branch::$(git rev-parse --abbrev-ref HEAD)"
+
       - name: Update version in package.json and package-lock.json
         id: update_version
         run: |
@@ -43,7 +47,7 @@ jobs:
             git config --global user.email "github-actions[bot]@users.noreply.github.com"
             git add package.json package-lock.json
             git commit -m "chore: update version to $version"
-            git push
+            git push origin HEAD:${{ steps.get_branch.outputs.branch }}
             echo "::set-output name=tag_updated::true"
           else
             echo "::set-output name=tag_updated::false"
