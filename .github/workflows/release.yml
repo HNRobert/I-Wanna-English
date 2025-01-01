@@ -33,7 +33,7 @@ jobs:
       - name: Get current branch
         id: get_branch
         run: |
-          branch=${GITHUB_REF#refs/heads/}
+          branch=$(echo ${GITHUB_REF#refs/heads/} | sed 's/refs\/heads\///')
           echo "::set-output name=branch::$branch"
 
       - name: Configure Git credentials
@@ -59,12 +59,17 @@ jobs:
             echo "::set-output name=tag_updated::false"
           fi
 
+      - name: Delete remote tag
+        if: steps.update_version.outputs.tag_updated == 'true'
+        run: |
+          git push --delete origin ${{ github.ref_name }}
+
       - name: Move tag to new commit
         if: steps.update_version.outputs.tag_updated == 'true'
         run: |
           git tag -d ${{ github.ref_name }}
           git tag ${{ github.ref_name }}
-          git push --force origin ${{ github.ref_name }}
+          git push origin ${{ github.ref_name }}
 
       - name: End workflow if tag updated
         if: steps.update_version.outputs.tag_updated == 'true'
