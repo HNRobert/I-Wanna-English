@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { execCommand, validateImSelect } from './utils';
 import { testImSelectConfiguration } from './test-utils';
+import { checkAndInstallImSelect } from './installer';
 
 let previousIM: string | null = null;
 let statusBarItem: vscode.StatusBarItem;
@@ -37,8 +38,30 @@ export async function activate(context: vscode.ExtensionContext) {
     // Initialize status bar
     const config = vscode.workspace.getConfiguration('i-wanna-english.autoSwitchInputMethod');
     const enabled = config.get<boolean>('enable');
+
+    // Set defaultIM based on platform if not already set
+    const defaultIM = config.get<string>('defaultIM');
+    if (!defaultIM) {
+        const platform = process.platform;
+        if (platform === 'win32') {
+            await config.update('defaultIM', '1033', vscode.ConfigurationTarget.Global);
+        } else if (platform === 'darwin') {
+            await config.update('defaultIM', 'com.apple.keylayout.ABC', vscode.ConfigurationTarget.Global);
+        }
+    }
+
     await updateStatusBar(enabled ?? true);
     statusBarItem.show();
+
+    // Show spinner while checking and installing im-select
+    statusBarItem.text = "$(sync~spin) IWE";
+    const installed = await checkAndInstallImSelect();
+    if (installed) {
+        await updateStatusBar(enabled ?? true);
+    } else {
+        statusBarItem.text = "$(x) IWE";
+        statusBarItem.tooltip = "I Wanna English: Installation failed";
+    }
 
     // Watch configuration changes
     context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(async e => {

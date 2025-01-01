@@ -30,17 +30,17 @@
         },
         "i-wanna-english.autoSwitchInputMethod.defaultIM": {
           "type": "string",
-          "default": "com.apple.keylayout.ABC",
+          "default": "",
           "description": "Default input method to switch to"
         },
         "i-wanna-english.autoSwitchInputMethod.obtainIMCmd": {
           "type": "string",
-          "default": "/opt/homebrew/bin/im-select",
+          "default": "im-select",
           "description": "Command to get current input method"
         },
         "i-wanna-english.autoSwitchInputMethod.switchIMCmd": {
           "type": "string",
-          "default": "/opt/homebrew/bin/im-select {im}",
+          "default": "im-select {im}",
           "description": "Command to switch input method. Use {im} as placeholder for input method"
         }
       }
