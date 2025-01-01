@@ -45,3 +45,7 @@ If you encounter issues with `im-select` or need to reinstall it, you can use th
 2. Type `>I Wanna English: Manually install im-select` and select the command.
 
 This will attempt to install `im-select` automatically and update the configuration accordingly.
+
+## Compatibility
+
+macOS & Windows
