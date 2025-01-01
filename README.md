@@ -8,7 +8,7 @@
 
 ## Why?
 
-It's really annoying when you wanna start coding happily, but the Input method suddenly bumps out and say hello to you.
+It's really annoying when you wanna start coding happily, but the Input method suddenly jumps out and says hello to you.
 
 This plugin would more or less solve the problem: You would switch to English automatically the moment you get into the editing view, isn't it great?
 
@@ -26,7 +26,7 @@ After installing it, put the path of the executable in the settings using the fo
 
 Then click the **Enable** option, and have fun coding!
 
-(There is a testing function, type `>I Wanna English: Test` on the searching column above, and you will see the button)
+(There is a testing function, type `>I Wanna English: Test` in the searching column above, and you will see the button)
 
 PS: You can also replace English with any other language, as long as you like (易语言: ? (bushi)).
 
