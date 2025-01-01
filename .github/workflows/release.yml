@@ -31,12 +31,16 @@ jobs:
         id: prerelease
         run: echo "::set-output name=prerelease::$(if [[ ${{ github.ref }} == *beta* ]]; then echo true; else echo false; fi)"
 
+      - name: Extract tag name
+        id: extract_tag
+        run: echo "::set-output name=tag::${GITHUB_REF#refs/tags/}"
+
       - name: Package the extension
         run: |
           if [[ ${{ steps.prerelease.outputs.prerelease }} == 'true' ]]; then
-            vsce package --pre-release -o i-wanna-english.vsix
+            vsce package --pre-release -o i-wanna-english-${{ steps.extract_tag.outputs.tag }}.vsix
           else
-            vsce package -o i-wanna-english.vsix
+            vsce package -o i-wanna-english-${{ steps.extract_tag.outputs.tag }}.vsix
           fi
 
       - name: Get previous tag
@@ -73,8 +77,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./i-wanna-english.vsix
-          asset_name: i-wanna-english-${{ github.ref }}.vsix
+          asset_path: ./i-wanna-english-${{ steps.extract_tag.outputs.tag }}.vsix
+          asset_name: i-wanna-english-${{ steps.extract_tag.outputs.tag }}.vsix
           asset_content_type: application/octet-stream
 
       - name: Publish to VSCode Marketplace
