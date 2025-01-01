@@ -77,10 +77,18 @@ export async function activate(context: vscode.ExtensionContext) {
     if (!(await validateImSelect(obtainIMCmd || ''))) {
         const message = 'im-select is not properly installed or configured. The extension may not work correctly.';
         const openSettings = 'Open Settings';
+        const tryReinstall = 'Try reinstall';
         
-        vscode.window.showWarningMessage(message, openSettings).then(selection => {
+        vscode.window.showWarningMessage(message, openSettings, tryReinstall).then(async selection => {
             if (selection === openSettings) {
                 vscode.commands.executeCommand('workbench.action.openSettings', 'i-wanna-english.autoSwitchInputMethod');
+            } else if (selection === tryReinstall) {
+                const installed = await checkAndInstallImSelect(true);
+                if (installed) {
+                    vscode.window.showInformationMessage('im-select installed successfully.');
+                } else {
+                    vscode.window.showErrorMessage('Failed to install im-select.');
+                }
             }
         });
     }
