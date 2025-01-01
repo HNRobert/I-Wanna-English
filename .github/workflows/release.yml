@@ -34,6 +34,10 @@ jobs:
         id: get_branch
         run: echo "::set-output name=branch::$(git rev-parse --abbrev-ref HEAD)"
 
+      - name: Configure Git credentials
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+
       - name: Update version in package.json and package-lock.json
         id: update_version
         run: |
@@ -114,7 +118,7 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
@@ -130,7 +134,7 @@ jobs:
         if: steps.update_version.outputs.tag_updated == 'false'
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./i-wanna-english-${{ steps.extract_tag.outputs.tag }}.vsix
