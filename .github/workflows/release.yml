@@ -12,82 +12,30 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        with:
-          persist-credentials: true
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '18'
 
-      - name: Install jq
-        run: sudo apt-get install -y jq
-
-      - name: Extract version numbers
-        id: extract_version
-        run: |
-          tag=${GITHUB_REF#refs/tags/}
-          version=$(echo $tag | sed -E 's/^([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
-          echo "::set-output name=version::$version"
-
-      - name: Configure Git credentials
-        run: |
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-
-      - name: Update version in package.json and package-lock.json
-        id: update_version
-        run: |
-          version=${{ steps.extract_version.outputs.version }}
-          jq --arg version "$version" '.version = $version' package.json > package.tmp && mv package.tmp package.json
-          if [ -f package-lock.json ]; then
-            jq --arg version "$version" '.version = $version | .packages[""].version = $version | .packages[""].dependencies["i-wanna-english"].version = $version' package-lock.json > package-lock.tmp && mv package-lock.tmp package-lock.json
-          fi
-          if [ -n "$(git status --porcelain)" ]; then
-            git config --global user.name "github-actions[bot]"
-            git config --global user.email "github-actions[bot]@users.noreply.github.com"
-            git add package.json package-lock.json
-            git commit -m "chore: update version to $version"
-            git push origin HEAD:main
-            echo "::set-output name=tag_updated::true"
-          else
-            echo "::set-output name=tag_updated::false"
-          fi
-
-      - name: Move tag to new commit
-        if: steps.update_version.outputs.tag_updated == 'true'
-        run: |
-          git tag -d ${{ github.ref_name }}
-          git tag ${{ github.ref_name }}
-          git push --force origin ${{ github.ref_name }}
-
-      - name: End workflow if tag updated
-        if: steps.update_version.outputs.tag_updated == 'true'
-        run: echo "Tag updated, ending workflow."
-
       - name: Install dependencies
-        if: steps.update_version.outputs.tag_updated == 'false'
         run: npm install
 
       - name: Install vsce
-        if: steps.update_version.outputs.tag_updated == 'false'
         run: npm install -g vsce
 
       - name: Build the extension
-        if: steps.update_version.outputs.tag_updated == 'false'
         run: npm run compile
 
       - name: Determine if prerelease
-        if: steps.update_version.outputs.tag_updated == 'false'
         id: prerelease
         run: echo "::set-output name=prerelease::$(if [[ ${{ github.ref }} == *beta* ]]; then echo true; else echo false; fi)"
 
       - name: Extract tag name
-        if: steps.update_version.outputs.tag_updated == 'false'
         id: extract_tag
         run: echo "::set-output name=tag::${GITHUB_REF#refs/tags/}"
 
       - name: Package the extension
-        if: steps.update_version.outputs.tag_updated == 'false'
         run: |
           if [[ ${{ steps.prerelease.outputs.prerelease }} == 'true' ]]; then
             vsce package --pre-release -o i-wanna-english-${{ steps.extract_tag.outputs.tag }}.vsix
@@ -96,25 +44,22 @@ jobs:
           fi
 
       - name: Get previous tag
-        if: steps.update_version.outputs.tag_updated == 'false'
         id: prev_tag
         run: |
           prev_tag=$(git describe --tags --abbrev=0 $(git rev-list --tags --skip=1 --max-count=1))
           echo "::set-output name=prev_tag::$prev_tag"
 
       - name: Get commit messages
-        if: steps.update_version.outputs.tag_updated == 'false'
         id: commit_messages
         run: |
           commits=$(git log --pretty=format:"%s" ${{ steps.prev_tag.outputs.prev_tag }}..${{ github.ref }})
           echo "::set-output name=commits::$commits"
 
       - name: Create GitHub Release
-        if: steps.update_version.outputs.tag_updated == 'false'
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
@@ -127,10 +72,9 @@ jobs:
           prerelease: ${{ steps.prerelease.outputs.prerelease }}
 
       - name: Upload VSIX to Release
-        if: steps.update_version.outputs.tag_updated == 'false'
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./i-wanna-english-${{ steps.extract_tag.outputs.tag }}.vsix
@@ -138,7 +82,6 @@ jobs:
           asset_content_type: application/octet-stream
 
       - name: Publish to VSCode Marketplace
-        if: steps.update_version.outputs.tag_updated == 'false'
         run: |
           if [[ ${{ steps.prerelease.outputs.prerelease }} == 'true' ]]; then
             vsce publish --pre-release -p ${{ secrets.VSCE_PAT }}

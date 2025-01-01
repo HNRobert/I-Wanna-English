@@ -2,7 +2,7 @@
   "name": "i-wanna-english",
   "displayName": "I Wanna English",
   "description": "Auto switch input method in VSCode",
-  "version": "v0.1.1-beta.6",
+  "version": "0.1.0",
   "publisher": "HNRobert",
   "engines": {
     "vscode": "^1.63.0"
