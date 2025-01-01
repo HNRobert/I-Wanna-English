@@ -1,0 +1,73 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '*.*.*'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install vsce
+        run: npm install -g vsce
+
+      - name: Build the extension
+        run: npm run compile
+
+      - name: Package the extension
+        run: vsce package
+
+      - name: Determine if prerelease
+        id: prerelease
+        run: echo "::set-output name=prerelease::$(if [[ ${{ github.ref }} == *beta* ]]; then echo true; else echo false; fi)"
+
+      - name: Get previous tag
+        id: prev_tag
+        run: |
+          prev_tag=$(git describe --tags --abbrev=0 $(git rev-list --tags --skip=1 --max-count=1))
+          echo "::set-output name=prev_tag::$prev_tag"
+
+      - name: Get commit messages
+        id: commit_messages
+        run: |
+          commits=$(git log --pretty=format:"%s" ${{ steps.prev_tag.outputs.prev_tag }}..${{ github.ref }})
+          echo "::set-output name=commits::$commits"
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            Changes since ${{ steps.prev_tag.outputs.prev_tag }}:
+            ${{ steps.commit_messages.outputs.commits }}
+
+            See full changelog: [Commits](${{ github.server_url }}/${{ github.repository }}/commits/${{ github.ref }})
+          draft: false
+          prerelease: ${{ steps.prerelease.outputs.prerelease }}
+
+      - name: Upload VSIX to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./i-wanna-english.vsix
+          asset_name: i-wanna-english-v${{ github.ref }}.vsix
+          asset_content_type: application/octet-stream
