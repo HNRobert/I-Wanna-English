@@ -25,6 +25,15 @@ async function toggleExtension() {
     await updateStatusBar(!currentEnabled);
 }
 
+async function manuallyInstallImSelect() {
+    const installed = await checkAndInstallImSelect(true);
+    if (installed) {
+        vscode.window.showInformationMessage('im-select installed successfully.');
+    } else {
+        vscode.window.showErrorMessage('Failed to install im-select.');
+    }
+}
+
 export async function activate(context: vscode.ExtensionContext) {
     // Create status bar item
     statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, -1);
@@ -34,6 +43,10 @@ export async function activate(context: vscode.ExtensionContext) {
     // Register toggle command
     let toggleCommand = vscode.commands.registerCommand('i-wanna-english.toggle', toggleExtension);
     context.subscriptions.push(toggleCommand);
+
+    // Register manually install command
+    let manuallyInstallCommand = vscode.commands.registerCommand('i-wanna-english.manuallyInstall', manuallyInstallImSelect);
+    context.subscriptions.push(manuallyInstallCommand);
 
     // Initialize status bar
     const config = vscode.workspace.getConfiguration('i-wanna-english.autoSwitchInputMethod');
@@ -77,18 +90,13 @@ export async function activate(context: vscode.ExtensionContext) {
     if (!(await validateImSelect(obtainIMCmd || ''))) {
         const message = 'im-select is not properly installed or configured. The extension may not work correctly.';
         const openSettings = 'Open Settings';
-        const tryReinstall = 'Try reinstall';
+        const manuallyInstall = 'Manually install';
         
-        vscode.window.showWarningMessage(message, openSettings, tryReinstall).then(async selection => {
+        vscode.window.showWarningMessage(message, openSettings, manuallyInstall).then(async selection => {
             if (selection === openSettings) {
                 vscode.commands.executeCommand('workbench.action.openSettings', 'i-wanna-english.autoSwitchInputMethod');
-            } else if (selection === tryReinstall) {
-                const installed = await checkAndInstallImSelect(true);
-                if (installed) {
-                    vscode.window.showInformationMessage('im-select installed successfully.');
-                } else {
-                    vscode.window.showErrorMessage('Failed to install im-select.');
-                }
+            } else if (selection === manuallyInstall) {
+                await manuallyInstallImSelect();
             }
         });
     }

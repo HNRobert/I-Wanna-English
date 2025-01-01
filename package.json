@@ -52,6 +52,11 @@
         "category": "I Wanna English"
       },
       {
+        "command": "i-wanna-english.manuallyInstall",
+        "title": "Manually install im-select",
+        "category": "I Wanna English"
+      },
+      {
         "command": "i-wanna-english.toggle",
         "title": "Toggle I Wanna English",
         "category": "I Wanna English"
