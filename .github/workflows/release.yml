@@ -33,7 +33,7 @@ jobs:
       - name: Get current branch
         id: get_branch
         run: |
-          branch=$(git symbolic-ref --short HEAD)
+          branch=${GITHUB_REF#refs/heads/}
           echo "::set-output name=branch::$branch"
 
       - name: Configure Git credentials
