@@ -34,6 +34,54 @@ async function manuallyInstallImSelect() {
     }
 }
 
+async function autoDetectAndConfigure() {
+    const config = vscode.workspace.getConfiguration('i-wanna-english.autoSwitchInputMethod');
+    const platform = process.platform;
+    let detectedIM: string | null = null;
+
+    if (platform === 'win32') {
+        const possibleIMs = ['1033', '2057', '4105', '3081'];
+        for (const im of possibleIMs) {
+            try {
+                await execCommand(`im-select ${im}`);
+                detectedIM = im;
+                break;
+            } catch (error) {
+                // Continue to the next possible input method
+            }
+        }
+    } else if (platform === 'darwin') {
+        const possibleIMs = [
+            'com.apple.keylayout.ABC',
+            'com.apple.keylayout.British',
+            'com.apple.keylayout.US',
+            'com.apple.keylayout.Canadian',
+            'com.apple.keylayout.Australian',
+            'com.apple.keylayout.Dvorak',
+            'com.apple.keylayout.Colemak',
+            'com.apple.keylayout.Irish',
+            'com.apple.keylayout.USInternational-PC',
+            'com.apple.keylayout.British-PC'
+        ];
+        for (const im of possibleIMs) {
+            try {
+                await execCommand(`im-select ${im}`);
+                detectedIM = im;
+                break;
+            } catch (error) {
+                // Continue to the next possible input method
+            }
+        }
+    }
+
+    if (detectedIM) {
+        await config.update('defaultIM', detectedIM, vscode.ConfigurationTarget.Global);
+        vscode.window.showInformationMessage(`Detected and configured default input method: ${detectedIM}`);
+    } else {
+        vscode.window.showErrorMessage('Failed to detect a suitable input method.');
+    }
+}
+
 export async function activate(context: vscode.ExtensionContext) {
     // Create status bar item
     statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, -1);
@@ -48,6 +96,10 @@ export async function activate(context: vscode.ExtensionContext) {
     let manuallyInstallCommand = vscode.commands.registerCommand('i-wanna-english.manuallyInstall', manuallyInstallImSelect);
     context.subscriptions.push(manuallyInstallCommand);
 
+    // Register auto detect and configure command
+    let autoDetectCommand = vscode.commands.registerCommand('i-wanna-english.autoDetect', autoDetectAndConfigure);
+    context.subscriptions.push(autoDetectCommand);
+
     // Initialize status bar
     const config = vscode.workspace.getConfiguration('i-wanna-english.autoSwitchInputMethod');
     const enabled = config.get<boolean>('enable');
@@ -55,42 +107,7 @@ export async function activate(context: vscode.ExtensionContext) {
     // Set defaultIM based on platform if not already set
     const defaultIM = config.get<string>('defaultIM');
     if (!defaultIM) {
-        const platform = process.platform;
-        if (platform === 'win32') {
-            const possibleIMs = ['1033', '2057', '4105', '3081'];
-            for (const im of possibleIMs) {
-                try {
-                    await execCommand(`im-select ${im}`);
-                    await config.update('defaultIM', im, vscode.ConfigurationTarget.Global);
-                    break;
-                } catch (error) {
-                    // Continue to the next possible input method
-                }
-            }
-            
-        } else if (platform === 'darwin') {
-            const possibleIMs = [
-                'com.apple.keylayout.ABC',
-                'com.apple.keylayout.British',
-                'com.apple.keylayout.US',
-                'com.apple.keylayout.Canadian',
-                'com.apple.keylayout.Australian',
-                'com.apple.keylayout.Dvorak',
-                'com.apple.keylayout.Colemak',
-                'com.apple.keylayout.Irish',
-                'com.apple.keylayout.USInternational-PC',
-                'com.apple.keylayout.British-PC'
-            ];
-            for (const im of possibleIMs) {
-                try {
-                    await execCommand(`im-select ${im}`);
-                    await config.update('defaultIM', im, vscode.ConfigurationTarget.Global);
-                    break;
-                } catch (error) {
-                    // Continue to the next possible input method
-                }
-            }
-        }
+        await autoDetectAndConfigure();
     }
 
     await updateStatusBar(enabled ?? true);

@@ -20,10 +20,12 @@ export async function validateImSelect(path: string): Promise<boolean> {
         }
         // Check if file exists and is executable
         await fs.promises.access(path, fs.constants.X_OK);
+        console.log(`Executing command: ${path}`);
         // Try to execute im-select
         const result = await execCommand(path);
         return result.length > 0;
     } catch (error) {
+        console.error(`Failed to validate im-select: ${error}`);
         return false;
     }
 }
