@@ -33,6 +33,11 @@
           "default": "",
           "description": "Default input method to switch to"
         },
+        "i-wanna-english.autoSwitchInputMethod.disableIM": {
+          "type": "string",
+          "default": "",
+          "description": "Input method to switch to when IWE is disabled (leave empty to not switch)"
+        },
         "i-wanna-english.autoSwitchInputMethod.obtainIMCmd": {
           "type": "string",
           "default": "im-select",
