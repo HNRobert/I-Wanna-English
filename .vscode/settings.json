@@ -4,6 +4,5 @@
     "Colemak",
     "keylayout"
   ],
-  "i-wanna-english.autoSwitchInputMethod.enable": true,
-  "prettier.tabWidth": 4
+  "i-wanna-english.autoSwitch.enable": true,
 }
