@@ -131,4 +131,3 @@ dist
 *.vsix
 
 .DS_Store
-.vscode
