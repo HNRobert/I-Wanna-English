@@ -20,7 +20,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '18'
+          node-version: '22'
 
       - name: Get version from tag
         id: version
@@ -31,7 +31,7 @@ jobs:
         run: |
           CURRENT_TAG=${GITHUB_REF#refs/tags/}
           LAST_TAG=$(git tag --sort=-creatordate | grep -v 'beta' | head -n 1)
-          
+
           if [ -z "$LAST_TAG" ]; then
             COMMITS=$(git log --pretty=format:"- %s" --no-merges)
             COMPARE_LINK="https://github.com/${{ github.repository }}/commits/${CURRENT_TAG}"
@@ -39,7 +39,7 @@ jobs:
             COMMITS=$(git log ${LAST_TAG}..HEAD --pretty=format:"- %s" --no-merges)
             COMPARE_LINK="https://github.com/${{ github.repository }}/compare/${LAST_TAG}...${CURRENT_TAG}"
           fi
-          
+
           echo "NOTES<<EOF" >> $GITHUB_OUTPUT
           echo "## Release ${CURRENT_TAG}" >> $GITHUB_OUTPUT
           echo "" >> $GITHUB_OUTPUT
@@ -61,24 +61,24 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '18'
+          node-version: '22'
 
       - name: Install dependencies
         run: npm install
 
       - name: Install vsce
-        run: npm install -g vsce
+        run: npm install -g @vscode/vsce
 
       - name: Build the extension
         run: npm run compile
 
       - name: Determine if prerelease
         id: prerelease
-        run: echo "::set-output name=prerelease::$(if [[ ${{ github.ref }} == *beta* ]]; then echo true; else echo false; fi)"
+        run: echo "prerelease=$(if [[ ${{ github.ref }} == *beta* ]]; then echo true; else echo false; fi)" >> $GITHUB_OUTPUT
 
       - name: Extract tag name
         id: extract_tag
-        run: echo "::set-output name=tag::${GITHUB_REF#refs/tags/}"
+        run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
 
       - name: Package the extension
         run: |
