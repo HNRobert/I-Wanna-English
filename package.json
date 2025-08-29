@@ -28,7 +28,7 @@
           "default": true,
           "description": "Enable auto switch input method"
         },
-        "i-wanna-english.defaultIM.choose": {
+        "i-wanna-english.defaultIM": {
           "type": "string",
           "default": "auto",
           "enum": [
@@ -93,12 +93,12 @@
           ],
           "description": "Default input method to switch to"
         },
-        "i-wanna-english.defaultIM.custom": {
+        "i-wanna-english.defaultIMCustom": {
           "type": "string",
           "default": "",
           "description": "Custom input method ID (only used when 'custom' is selected above)"
         },
-        "i-wanna-english.disableIM.choose": {
+        "i-wanna-english.disableIM": {
           "type": "string",
           "default": "disable",
           "enum": [
@@ -163,7 +163,7 @@
           ],
           "description": "Input method to switch to when IWE is disabled (leave empty to not switch)"
         },
-        "i-wanna-english.disableIM.custom": {
+        "i-wanna-english.disableIMCustom": {
           "type": "string",
           "default": "",
           "description": "Custom input method ID for disable IM (only used when 'custom' is selected above)"

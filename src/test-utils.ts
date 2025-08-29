@@ -5,7 +5,7 @@ export async function testImSelectConfiguration(): Promise<string> {
   const config = vscode.workspace.getConfiguration('i-wanna-english');
   const obtainIMCmd = config.get<string>('obtainIMCmd');
   const switchIMCmd = config.get<string>('switchIMCmd');
-  let defaultIM = config.get<string>('defaultIM.choose');
+  let defaultIM = config.get<string>('defaultIM');
 
   // If auto is selected, we can't test without auto-detection
   if (defaultIM === 'auto') {
@@ -14,7 +14,7 @@ export async function testImSelectConfiguration(): Promise<string> {
 
   // If custom is selected, use the custom input method
   if (defaultIM === 'custom') {
-    defaultIM = config.get<string>('defaultIM.custom') || '';
+    defaultIM = config.get<string>('defaultIMCustom') || '';
   }
 
   if (!obtainIMCmd || !switchIMCmd || !defaultIM) {

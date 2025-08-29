@@ -16,7 +16,7 @@ async function updateStatusBar(enabled: boolean) {
     const testResult = await testImSelectConfiguration();
     if (!testResult.includes('✅')) {
       vscode.window.showWarningMessage(
-        'I Wanna English: Input method configuration test failed.'
+        `I Wanna English: Input method configuration test failed.\n${testResult}`
       );
     }
   }
@@ -29,7 +29,7 @@ async function toggleExtension() {
 
   // If disabling IWE and disableIM is configured, switch to that input method
   if (!newEnabled) {
-    let disableIM = config.get<string>('disableIM.choose');
+    let disableIM = config.get<string>('disableIM');
 
     // Skip if disabled (no change when disabled)
     if (disableIM === 'disable' || !disableIM) {
@@ -41,7 +41,7 @@ async function toggleExtension() {
 
     // If custom is selected, use the custom input method
     if (disableIM === 'custom') {
-      disableIM = config.get<string>('disableIM.custom') || '';
+      disableIM = config.get<string>('disableIMCustom') || '';
     }
 
     if (disableIM) {
@@ -111,7 +111,7 @@ async function autoDetectAndConfigure() {
 
   if (detectedIM) {
     await config.update(
-      'defaultIM.choose',
+      'defaultIM',
       detectedIM,
       vscode.ConfigurationTarget.Global
     );
@@ -158,7 +158,7 @@ export async function activate(context: vscode.ExtensionContext) {
   const enabled = config.get<boolean>('autoSwitch.enable');
 
   // Set defaultIM based on platform if not already set or if set to auto
-  const defaultIM = config.get<string>('defaultIM.choose');
+  const defaultIM = config.get<string>('defaultIM');
   if (!defaultIM || defaultIM === 'auto') {
     await autoDetectAndConfigure();
   }
@@ -218,12 +218,12 @@ export async function activate(context: vscode.ExtensionContext) {
     try {
       const obtainIMCmd = config.get<string>('obtainIMCmd');
       const switchIMCmd = config.get<string>('switchIMCmd');
-      let defaultIM = config.get<string>('defaultIM.choose');
+      let defaultIM = config.get<string>('defaultIM');
 
       // If auto is selected, auto-detect the input method
       if (defaultIM === 'auto') {
         await autoDetectAndConfigure();
-        defaultIM = config.get<string>('defaultIM.choose');
+        defaultIM = config.get<string>('defaultIM');
         // If still auto after detection, skip
         if (defaultIM === 'auto') {
           return;
@@ -232,7 +232,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
       // If custom is selected, use the custom input method
       if (defaultIM === 'custom') {
-        defaultIM = config.get<string>('defaultIM.custom') || '';
+        defaultIM = config.get<string>('defaultIMCustom') || '';
       }
 
       if (!obtainIMCmd || !switchIMCmd || !defaultIM) {
